@@ -29,7 +29,7 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | StrOutputParser()
     )
 
-    output = full_chain.invoke({"review": prompt})
+    output = flight_review_chain.invoke({"review": prompt})
     st.write(output)
 
 #     Handling Negative Experiences Caused by the Airline
