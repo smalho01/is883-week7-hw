@@ -52,8 +52,7 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
     1. Thank them for their feedback 
     2. Thank them for flying with our airline
     3. Respond to their feedback with a personal message regarding their specifics of the feedback, addessing the customer directly.
-    4. Be professional sounding as that of an expert customer service representative.
-    5. Have the response be conversational in nature, it should sound like they are talking to a person not an automated chat bot. It should not be framed as an email.
+    4. Be professional sounding as that of an expert customer service representative, though keep the conversation casual. Do not sign off with a closing signature message.    
     
 
     Customer Review:
