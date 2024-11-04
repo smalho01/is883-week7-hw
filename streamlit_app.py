@@ -9,7 +9,7 @@ openai_api_key = st.secrets["MyOpenAIKey"]
 chat = ChatOpenAI(openai_api_key=openai_api_key)
 
 st.title("Trip Review Chatbot")
-st.write("This is a simple chatbot to record and analyze your most recent trip")
+st.write("This is a simple chatbot to record and analyze your the experience of your most recent trip")
 
 if prompt := st.text_input("Share with us your experience of the latest trip:"):
 
