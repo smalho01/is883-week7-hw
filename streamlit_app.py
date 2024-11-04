@@ -3,7 +3,7 @@ from openai import OpenAI
 from langchain.llms import OpenAI
 from langchain_core.output_parsers import StrOutputParser
 from langchain.prompts import PromptTemplate
-
+from langchain_core.runnables import RunnableBranch
 
 openai_api_key = st.secrets["MyOpenAIKey"]
 llm = OpenAI(openai_api_key=openai_api_key)
@@ -29,7 +29,49 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | StrOutputParser()
     )
 
-    output = flight_review_chain.invoke({"review": prompt})
+    review_system_negative_base_template = """You are an expert professional customer service representative for an airline company.
+        From the following customer review text, determine whether the negativity of the review is the airline's fault or not.
+
+        Do not provide any justifcation for who's fault it is and answer simply with only one word. 
+        It the negativity in the review is the airline's fault, you should output "airline", otherwise you should ouput "other".
+
+        Customer Review:
+        {review}
+
+        """
+
+    flight_negative_base_review_chain = (
+        PromptTemplate.from_template(review_system_negative_base_template)
+        | llm
+    )
+
+    review_system_positive_base_template = """You are an expert professional customer service representative for an airline company.
+    Based on the following customer review text, you should thank them for their feedback and for choosing to fly with the airline.
+
+    Your response should follow these guidelines:
+    1. Thank them for their feedback 
+    2. Thank them for flying with our airline
+    3. Respond to their feedback with a personal message regarding their specifics of the feedback.
+    4. Be professional sounding as that of an expert customer service representative.
+
+    Customer Review:
+    {review}
+
+    """
+
+    flight_positive_base_review_chain = (
+        PromptTemplate.from_template(review_system_positive_base_template)
+        | llm
+    )
+
+    branch_sentiment_analysis = RunnableBranch(
+        (lambda x: "negative" in x["sentiment"].lower(), flight_negative_base_review_chain),
+        flight_positive_base_review_chain,
+    )
+
+    full_chain = {"sentiment": flight_review_chain, "text": lambda x: x["review"]} | branch_sentiment_analysis
+
+    output = full_chain.invoke({"review": prompt})
     st.write(output)
 
 #     Handling Negative Experiences Caused by the Airline
