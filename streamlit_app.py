@@ -100,4 +100,4 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
     full_chain = {"sentiment": flight_review_chain, "review": lambda x: x["review"]} | branch_sentiment_analysis
 
     output = full_chain.invoke({"review": prompt})
-    st.write(output)
+    st.markdown(output)
