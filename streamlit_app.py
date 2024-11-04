@@ -13,7 +13,7 @@ st.write("This is a simple chatbot to record and analyze your the experience of 
 
 if prompt := st.text_input("Share with us your experience of the latest trip:"):
 
-    review_system_template = """You are an expert customer service representative for an airline company called Sahil's Speedy Service. Your name is Arnold.
+    review_system_template = """You are an expert customer service representative for an airline company.
         From the following customer review text, determine whether the sentiment of the customer is positive or negative.
 
         Do not respond with more than one word.
@@ -29,7 +29,7 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | StrOutputParser()
     )
 
-    review_system_negative_base_template = """You are an expert customer service representative for an airline company called Sahil's Speedy Service. Your name is Arnold.
+    review_system_negative_base_template = """You are an expert customer service representative for an airline company.
         From the following customer review text, determine whether the negativity of the review is the airline's fault or not.
 
         Do not provide any justifcation for who's fault it is and answer simply with only one word. 
@@ -45,13 +45,14 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | llm
     )
 
-    review_system_positive_base_template = """You are an expert customer service representative for an airline companycalled Sahil's Speedy Service. Your name is Arnold.
+    review_system_positive_base_template = """You are an expert customer service representative for an airline company.
     Based on the following customer review text, you should thank them for their feedback and for choosing to fly with the airline.
 
     Your response should follow these guidelines:
     1. Thank them for their feedback 
     2. Thank them for flying with our airline
     3. Respond to their feedback with a personal conversational message regarding their specifics of the feedback, addessing the customer directly.
+    4. The end of the response should NOT include a closing email signiature such as" Best Regards..." or "Sincerely.."
     
 
     Customer Review:
