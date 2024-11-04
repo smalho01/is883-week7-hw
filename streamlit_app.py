@@ -15,8 +15,13 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
 
     review_system_template = """You are an expert customer service representative for an airline company.
         From the following customer review text, determine whether the sentiment of the customer is positive or negative.
+        If the review is negative, determine if the negativity was caused by the airline or if it was out of the airline's control. 
+        Your output should be one of three responses: 
+            - "positive" if the review was positive or neutal 
+            - "negative - airline" if the review was negative and the airline's fault
+            - "negative - other" if the review was negative and out of the airlines contorl
 
-        Do not respond with more than one word.
+        Do not respond with more than one simple string accoridng to the three options in quotes above.
 
         Customer Review:
         {review}
@@ -29,23 +34,7 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | StrOutputParser()
     )
 
-    review_system_negative_base_template = """You are an expert customer service representative for an airline company.
-        From the following customer review text, determine whether the negativity of the review is the airline's fault or not.
-
-        Do not provide any justifcation for who's fault it is and answer simply with only one word. 
-        It the negativity in the review is the airline's fault, you should output "airline", otherwise you should ouput "other".
-
-        Customer Review:
-        {review}
-
-        """
-
-    flight_negative_base_review_chain = (
-        PromptTemplate.from_template(review_system_negative_base_template)
-        | llm
-    )
-
-    review_system_positive_base_template = """You are an expert customer service representative for an airline company.
+    review_system_positive_template = """You are an expert customer service representative for an airline company.
     Based on the following customer review text, you should thank them for their feedback and for choosing to fly with the airline.
 
     Your response should follow these guidelines:
@@ -59,8 +48,8 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
 
     """
 
-    flight_positive_base_review_chain = (
-        PromptTemplate.from_template(review_system_positive_base_template)
+    flight_positive_review_chain = (
+        PromptTemplate.from_template(review_system_positive_template)
         | llm
     )
 
@@ -102,34 +91,13 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | llm
     )
 
-    branch_negative_fault = RunnableBranch(
-        (lambda x: "airline" in x["fault"].lower(), flight_negative_airline_review_chain),
-        flight_negative_other_review_chain,
-    )
-
     branch_sentiment_analysis = RunnableBranch(
-        (lambda x: "negative" in x["sentiment"].lower(), branch_negative_fault),
-        flight_positive_base_review_chain,
+        (lambda x: "negative - airline" in x["sentiment"].lower(), flight_negative_airline_review_chain),
+        (lambda x: "negative - other" in x["sentiment"].lower(), flight_negative_other_review_chain),
+        flight_positive_review_chain,
     )
 
     full_chain = {"sentiment": flight_review_chain, "review": lambda x: x["review"]} | branch_sentiment_analysis
 
     output = full_chain.invoke({"review": prompt})
     st.write(output)
-
-#     Handling Negative Experiences Caused by the Airline
-
-# If the app detects that:
-# The user had a negative experience, and
-# The cause of their dissatisfaction is the airline's fault (e.g., lost luggage),
-# Then, the app should display a message offering sympathies and inform the user that customer service will contact them soon to resolve the issue or provide compensation. (5 Points)
-# Handling Negative Experiences Beyond the Airline's Control
-
-# If the app detects that:
-# The user had a negative experience, and
-# The cause of their dissatisfaction is beyond the airline's control (e.g., a weather-related delay),
-# Then, the app should offer sympathies but explain that the airline is not liable in such situations. (5 Points)
-# Handling Positive Experiences
-
-# If the user's experience is positive, the app should thank them for their feedback and for choosing to fly with the airline. (5 Points)
-# Make sure the agent's responses sound acceptable (e.g., professional, to the point, etc.)
