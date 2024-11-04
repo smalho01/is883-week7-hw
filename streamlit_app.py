@@ -18,9 +18,8 @@ tokenizer.pad_token = tokenizer.eos_token
 st.title("Trip Review Chatbot")
 st.write("This is a simple chatbot to record and analyze your most recent trip")
 
-prompt = st.text_input("Share with us your experience of the latest trip:")
+if prompt := st.chat_input("Share with us your experience of the latest trip:"):
 
-if st.button("Generate Response"):
     input = tokenizer.encode(prompt, return_tensors='pt')
 
     high_creativity_response = tokenizer.decode(model.generate(input, max_length=token_length, num_return_sequences=1, temperature=0.7, do_sample=True)[0])
