@@ -64,8 +64,51 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
         | llm
     )
 
+    review_system_negative_airline_template =  """You are an expert customer service representative for an airline company.
+    Based on the following customer review text, you should display a message offering sympathies and inform the user that customer service will contact them soon to resolve the issue or provide compensation.
+
+    Your response should follow these guidelines:
+    1. Offet sympathies
+    2. Inform the user that customer service will contact them soon to resolve the issue or provide compensation
+    3. Respond to their feedback with a personal conversational message regarding their specifics of the feedback, addessing the customer directly.
+    4. The response should end with "Regards, Arnold Chatbot"    
+
+    Customer Review:
+    {review}
+
+    """
+
+    flight_negative_airline_review_chain = (
+        PromptTemplate.from_template(review_system_negative_airline_template)
+        | llm
+    )
+
+    review_system_negative_other_template = """You are an expert customer service representative for an airline company.
+    Based on the following customer review text, you should display a message offering sympathies but explain that the airline is not liable in such situations. (5 Points)
+
+    Your response should follow these guidelines:
+    1. Offer sympathies
+    2. Explain that the airline is not liable in such situations
+    3. Respond to their feedback with a personal conversational message regarding their specifics of the feedback, addessing the customer directly.
+    4. The response should end with "Regards, Arnold Chatbot"    
+
+    Customer Review:
+    {review}
+
+    """
+
+    flight_negative_other_review_chain = (
+        PromptTemplate.from_template(review_system_negative_other_template)
+        | llm
+    )
+
+    branch_negative_fault = RunnableBranch(
+        (lambda x: "airline" in x["fault"].lower(), flight_negative_airline_review_chain),
+        flight_negative_other_review_chain,
+    )
+
     branch_sentiment_analysis = RunnableBranch(
-        (lambda x: "negative" in x["sentiment"].lower(), flight_negative_base_review_chain),
+        (lambda x: "negative" in x["sentiment"].lower(), branch_negative_fault),
         flight_positive_base_review_chain,
     )
 
