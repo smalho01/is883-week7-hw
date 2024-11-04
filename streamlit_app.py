@@ -52,8 +52,7 @@ if prompt := st.text_input("Share with us your experience of the latest trip:"):
     1. Thank them for their feedback 
     2. Thank them for flying with our airline
     3. Respond to their feedback with a personal conversational message regarding their specifics of the feedback, addessing the customer directly.
-    4. The end of the response should NOT include a closing email signiature such as" Best Regards..." or "Sincerely.."
-    
+    4. The response should end with "Regards, Arnold Chatbot"    
 
     Customer Review:
     {review}
