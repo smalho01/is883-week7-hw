@@ -8,8 +8,8 @@ from langchain_core.runnables import RunnableBranch
 openai_api_key = st.secrets["MyOpenAIKey"]
 llm = OpenAI(openai_api_key=openai_api_key)
 
-st.title("Sahil's Soaring Shuttle Airline Feedback Form")
-st.write("This is a simple chatbot to record and analyze the experience of your most recent trip with Sahil's Soaring Shuttle")
+st.title("Sahil's Soaring Shuttle Feedback")
+st.write("This is a simple chatbot to record and analyze the experience of your most recent trip with the airline Sahil's Soaring Shuttle. Please enter any feedback and review of your experience below.")
 
 if prompt := st.text_input("Share with us your experience of the latest trip:"):
 
