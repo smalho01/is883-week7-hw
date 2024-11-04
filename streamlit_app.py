@@ -1,5 +1,12 @@
 import streamlit as st
 from openai import OpenAI
+from langchain.chat_models import ChatOpenAI
+
+
+openai_api_key = st.secrets["db_username"]
+
+### Create a ChatOpenAI object
+chat = ChatOpenAI(openai_api_key=openai_api_key)
 
 # Show title and description.
 st.title("💬 Chatbot")
