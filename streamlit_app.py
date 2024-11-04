@@ -11,8 +11,24 @@ st.write("This is a simple chatbot to record and analyze your the experience of 
 
 if prompt := st.text_input("Share with us your experience of the latest trip:"):
 
-    st.write(prompt)
+    review_system_template = """You are an expert professional customer service representative for an airline company.
+        From the following customer review text, determine whether the sentiment of the customer is positive or negative.
 
+        Do not respond with more than one word.
+
+        Customer Review:
+        {review}
+
+        """
+
+    flight_review_chain = (
+        PromptTemplate.from_template(review_system_template)
+        | llm
+        | StrOutputParser()
+    )
+
+    output = full_chain.invoke({"review": prompt})
+    st.write(output)
 
 #     Handling Negative Experiences Caused by the Airline
 
