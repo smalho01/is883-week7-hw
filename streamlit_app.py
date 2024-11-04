@@ -3,7 +3,7 @@ from openai import OpenAI
 from langchain.chat_models import ChatOpenAI
 
 
-openai_api_key = st.secrets["db_username"]
+openai_api_key = st.secrets["MyOpenAIKey"]
 
 ### Create a ChatOpenAI object
 chat = ChatOpenAI(openai_api_key=openai_api_key)
