@@ -1,10 +1,12 @@
 import streamlit as st
 from openai import OpenAI
-from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+from langchain_core.output_parsers import StrOutputParser
+from langchain.prompts import PromptTemplate
 
 
 openai_api_key = st.secrets["MyOpenAIKey"]
-chat = ChatOpenAI(openai_api_key=openai_api_key)
+llm = OpenAI(openai_api_key=openai_api_key)
 
 st.title("Trip Review Chatbot")
 st.write("This is a simple chatbot to record and analyze your the experience of your most recent trip")
